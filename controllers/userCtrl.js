@@ -38,6 +38,7 @@ const userCtrl = {
             if(!aMatch) return res.status(400).json({msg:"Incorrect password"})
 
             const payload = {id: user._id, name: user.username}
+            console.log(process.env.TOKEN_SECRET)
             const token = jwt.sign(payload, process.env.TOKEN_SECRET, {expiresIn: "1d"})
             res.json({token})
 
