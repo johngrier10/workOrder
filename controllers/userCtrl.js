@@ -1,5 +1,5 @@
 const Users = require('../models/userModel')
-const bcrypt = require('bcrypt')
+// const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 
 const userCtrl = {
@@ -8,12 +8,16 @@ const userCtrl = {
 
     registerUser: async (req, res) => {
         try {
-
+            
+            //From the request body, destructure fields.
             const {username, email, password} = req.body
             const user = await Users.findOne({email: email})
             if (user) return res.status(400).json({msg:"The email already exists."})
-
+            res.json(username, password)
             const passwordHash = await bcrypt.hash(password, 10)
+
+            res.json(passwordHash)
+
             const newUser = new Users({
                 username: username,
                 email: email,
@@ -27,6 +31,8 @@ const userCtrl = {
             return res.status(500).json({msg: error.message})
         }
     },
+
+    
     loginUser: async (req, res) => {
 
         try {
@@ -38,7 +44,6 @@ const userCtrl = {
             if(!aMatch) return res.status(400).json({msg:"Incorrect password"})
 
             const payload = {id: user._id, name: user.username}
-            console.log(process.env.TOKEN_SECRET)
             const token = jwt.sign(payload, process.env.TOKEN_SECRET, {expiresIn: "1d"})
             res.json({token})
 

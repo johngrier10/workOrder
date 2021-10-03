@@ -1,7 +1,9 @@
 const router = require('express').Router()
+const auth = require('../middleware/auth')
+const ticketCtrl = require('../controllers/ticketCtrl')
 
 router.route('/')
-    .get((req,res)=>{res.json({msg: "Ticket List"})})
+    .get(auth, ticketCtrl.getTickets)
     .post
 
 router.route('/:id')
